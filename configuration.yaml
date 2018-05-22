@@ -226,7 +226,6 @@ camera:
   #  name: Nuusku Cam2
   #  extra_arguments: -q:v 2
 
-
 #Slack integration
 notify:
   - platform: slack
@@ -292,6 +291,7 @@ device_tracker:
     hosts:
       hostone: 192.168.1.16
 
+####### before this works run from cli --- sudo su -s /bin/bash hass then ssh-keygen press enter for all then ssh-copy-id pi@127.0.0.1
 shell_command:
   rebootpi: ssh pi@127.0.0.1 sudo reboot
   restartha: ssh pi@127.0.0.1 sudo service home-assistant@homeassistant restart

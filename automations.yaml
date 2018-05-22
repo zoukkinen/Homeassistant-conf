@@ -59,7 +59,6 @@
     platform: sun
     # Possible values: sunset, sunrise
     event: sunset
-    # Optional time offset. This example is 45 minutes.
   action:
     - service: homeassistant.turn_on
       entity_id: light.closet_light_left
@@ -71,7 +70,6 @@
     platform: sun
     # Possible values: sunset, sunrise
     event: sunrise
-    # Optional time offset. This example is 45 minutes.
   action:
     - service: homeassistant.turn_off
       entity_id: light.closet_light_left
@@ -83,24 +81,18 @@
     platform: sun
     # Possible values: sunset, sunrise
     event: sunset
-    # Optional time offset. This example is 45 minutes.
   action:
     - service: homeassistant.turn_on
       entity_id: switch.ulko_1
-    #- service: homeassistant.turn_on
-    #  entity_id: switch.plug_158d0001ded2e0
 
 - alias: Turn off Christmas lights on sunrise
   trigger:
     platform: sun
     # Possible values: sunset, sunrise
     event: sunrise
-    # Optional time offset. This example is 45 minutes.
   action:
     - service: homeassistant.turn_off
       entity_id: switch.ulko_1
-    #- service: homeassistant.turn_off
-    #  entity_id: switch.plug_158d0001ded2e0
 
 - alias: Movie time - single click
   trigger:
