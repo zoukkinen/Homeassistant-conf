@@ -1,0 +1,105 @@
+entrace:
+  name: Entrance
+  view: false
+  entities:
+  - sensor.entrance_temperature
+  - sensor.entrance_humidity
+  - binary_sensor.motion_sensor_158d00016d56c6
+  - binary_sensor.door_window_sensor_158d000171eafd
+  - sensor.illumination_34ce00fa7af1
+  - light.gateway_light_34ce00fa7af1
+  - light.hue_ambiance_candle_1
+  - light.hue_ambiance_candle_2
+  - light.hue_ambiance_candle_3
+kitchen:
+  name: Kitchen
+  view: false
+  entities:
+  - light.kitchen_bulb
+  - switch.wall_switch_158d000159abf6
+  - fan.kitchen_fan
+  - sensor.kitchen_temperature
+  - sensor.kitchen_humidity
+  - binary_sensor.water_leak_sensor_158d0001bb7039
+balcony:
+  name: Balcony
+  view: false
+  entities:
+  - sensor.ulko_lampotila_temperature
+  - sensor.ulko_lampotila_humidity
+  - switch.ulko_1
+  - binary_sensor.flower
+  - plant.beconia_plant
+  - sensor.beconia_flower_moisture
+  - sensor.beconia_flower_temperature
+  - sensor.beconia_flower_light_intensity
+  - sensor.beconia_flower_conductivity
+  - sensor.beconia_flower_battery
+living_room:
+  name: Living Room
+  view: false
+  entities:
+  - switch.plug_158d0001ded2e0
+  - switch.wall_switch_left_158d0001f423d6
+  - switch.wall_switch_right_158d0001f423d6
+  - binary_sensor.switch_158d00019ca681
+  - light.closet_light_left
+  - light.closet_light_right
+  - light.reading_light
+  - sensor.temperature_158d00019ce67e
+  - sensor.humidity_158d00019ce67e
+  - binary_sensor.wall_switch_both_158d0001641c55
+  - binary_sensor.wall_switch_left_158d0001641c55
+  - binary_sensor.wall_switch_right_158d0001641c55
+  - sensor.living_room_ble_temperature
+  - sensor.living_room_ble_humidity
+  - sensor.living_room_ble_battery
+  - remote.apple_tv_3
+master_bedroom:
+  name: Bedroom
+  view: false
+  entities:
+  - light.hue_ambiance_ceiling
+  - light.nikos_light
+  - light.cindis_light
+family:
+  name: Family
+  view: false
+  entities:
+  - device_tracker.iphone_cindi
+  - device_tracker.iphone_zoukkinen
+nuuksucam:
+  name: Nuusku Cam
+  view: false
+  entities:
+  - device_tracker.hostone
+raspberrypi:
+  name: Pi and Network
+  view: false
+  control: hidden
+  entities:
+  - sensor.disk_use_percent_home
+  - sensor.memory_free
+  - sensor.speedtest_download
+  - sensor.speedtest_upload
+  - sensor.speedtest_ping
+  - switch.router
+kerava:
+    name: Kerava
+    view: false
+    entities:
+    - sensor.weather_kerava_current
+    - sensor.weather_kerava_temperature
+    - sensor.weather_kerava_humidity
+    - sun.sun
+    - sensor.moon
+qnapnas:
+    name: QNAP TS-231P
+    view: false
+    entities:
+    - sensor.nikonnas_status
+    - sensor.nikonnas_cpu_usage
+    - sensor.nikonnas_memory_usage
+    - sensor.nikonnas_volume_used_datavol1
+    - sensor.nikonnas_network_up_eth0
+    - sensor.nikonnas_network_up_eth1

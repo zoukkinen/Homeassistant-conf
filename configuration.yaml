@@ -1,0 +1,354 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  latitude: !secret latitude
+  longitude: !secret longtitude
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 51
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: Europe/Helsinki
+  # Customization file
+  customize: !include customize.yaml
+
+# Show links to resources in log and frontend
+#introduction:
+
+# Enables the frontend
+frontend:
+
+# Enables configuration UI
+config:
+
+http:
+  # Secrets are defined in the file secrets.yaml
+  # Learn more at https://home-assistant.io/docs/configuration/secrets/
+  api_password: !secret http_password
+  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+  base_url: !secret baseurl
+  cors_allowed_origins: '*'
+
+# Checks for available updates
+# Note: This component will send some information about your system to
+# the developers to assist with development of Home Assistant.
+# For more information, please see:
+# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
+updater:
+  # Optional, allows Home Assistant developers to focus on popular components.
+  # include_used_components: true
+
+# Discover some devices automatically
+discovery:
+  ignore:
+    - apple_tv
+    - google_cast
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+# Enables support for tracking state changes over time
+history:
+
+# View all events in a logbook
+logbook:
+
+# Enables a map showing the location of tracked devices
+#map:
+
+# Track the sun
+sun:
+
+# Sensors
+sensor:
+  - platform: yweather
+    name: Weather Kerava
+    monitored_conditions:
+      - temperature
+      - weather_current
+      - humidity
+  - platform: mqtt
+    name: "Kitchen Temperature"
+    state_topic: "stat/Sonoff1/STATUS10"
+    value_template: "{{ value_json.StatusSNS.DHT22.Temperature }}"
+    unit_of_measurement: "°C"
+  - platform: mqtt
+    name: "Kitchen Humidity"
+    state_topic: "stat/Sonoff1/STATUS10"
+    value_template: "{{ value_json.StatusSNS.DHT22.Humidity }}"
+    unit_of_measurement: "%"
+#  - platform: mqtt
+#    name: "Corridor Temperature"
+#    state_topic: "stat/Sonoff2/STATUS10"
+#    value_template: "{{ value_json.StatusSNS.DHT22.Temperature }}"
+#    unit_of_measurement: "°C"
+#  - platform: mqtt
+#    name: "Corridor Humidity"
+#    state_topic: "stat/Sonoff2/STATUS10"
+#    value_template: "{{ value_json.StatusSNS.DHT22.Humidity }}"
+#    unit_of_measurement: "%"
+  - platform: miflora
+    mac: !secret mifloramac
+    name: Beconia flower
+    force_update: false
+    median: 3
+    monitored_conditions:
+      - moisture
+      - light
+      - temperature
+      - conductivity
+      - battery
+  - platform: moon
+#Speedtest
+  - platform: speedtest
+    minute: 30
+    hour: 4
+    monitored_conditions:
+      - ping
+      - download
+      - upload
+#system monitor
+  - platform: systemmonitor
+    resources:
+      - type: disk_use_percent
+        arg: /home
+      - type: memory_free
+#aqara ble sensor
+  - platform: mitemp_bt
+    mac: !secret mitempmac
+    name: Living Room BLE
+    force_update: false
+    median: 3
+    monitored_conditions:
+      - temperature
+      - humidity
+      - battery
+  - platform: qnap
+    host: 192.168.1.113
+    username: !secret qnapuser
+    password: !secret qnappass
+    monitored_conditions:
+      - status
+      - cpu_usage
+      - memory_percent_used
+      - network_tx
+      - volume_percentage_used
+
+#Binary sensors
+binary_sensor:
+  - platform: template
+    sensors:
+      flower:
+        value_template: '{% if is_state("plant.beconia_plant", "ok") %}False{% else %}True{% endif %}'
+        friendly_name: 'Beconia flower'
+        device_class: smoke
+
+#Switches
+switch:
+  - platform: wake_on_lan
+    name: router
+    mac_address: !secret routermac
+    host: 192.168.1.1
+
+# Text to speech
+tts:
+  platform: google
+  language: 'fi'
+
+# MQTT Broker to Mosquitto
+mqtt:
+  broker: localhost
+  port: 1883
+  client_id: home-assistant-1
+  username: pi
+  password: !secret mqtt_password
+
+# Lights
+light:
+#  - platform: mqtt
+#    name: "Corridor Light"
+#    command_topic: "cmnd/Sonoff2/power"
+#    state_topic: "stat/Sonoff2/POWER"
+#    qos: 1
+#    payload_on: "ON"
+#    payload_off: "OFF"
+#    retain: true
+#  - platform: mqtt
+#    name: "Led strip"
+#    command_topic: "cmnd/Sonoff4/power"
+#    state_topic: "stat/Sonoff4/POWER"
+#    qos: 1
+#    payload_on: "ON"
+#    payload_off: "OFF"
+#    retain: true
+  - platform: mqtt
+    name: "Closet light left"
+    command_topic: "cmnd/Sonoff6/power"
+    state_topic: "stat/Sonoff6/POWER"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    retain: true
+  - platform: mqtt
+    name: "Closet light right"
+    command_topic: "cmnd/Sonoff7/power"
+    state_topic: "stat/Sonoff7/POWER"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    retain: true
+
+# Fans
+fan:
+  - platform: mqtt
+    name: "Kitchen fan"
+    command_topic: "cmnd/Sonoff1/power"
+    state_topic: "stat/Sonoff1/POWER"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    retain: true
+
+# Camera
+#ffmpeg:
+#  ffmpeg_bin: /usr/bin/avconv
+
+camera:
+  - platform: mjpeg
+    mjpeg_url: !secret nuuskuurl
+    name: Nuusku Cam
+    username: !secret nuuskuuser
+    password: !secret nuuskupass
+  #- platform: ffmpeg
+  #  ffmpeg_bin: /usr/bin/avconv
+  #  input: !secret nuuskuinput
+  #  name: Nuusku Cam2
+  #  extra_arguments: -q:v 2
+
+
+#Slack integration
+notify:
+  - platform: slack
+    name: slack
+    api_key: !secret slack_api
+    default_channel: '#notify'
+
+plant:
+  beconia_plant:
+    sensors:
+      moisture: sensor.beconia_flower_moisture
+      battery: sensor.beconia_flower_battery
+      temperature: sensor.beconia_flower_temperature
+      conductivity: sensor.beconia_flower_conductivity
+      brightness: sensor.beconia_flower_light_intensity
+    min_moisture: 20
+    max_moisture: 70
+    min_battery: 17
+    min_conductivity: 100
+    min_temperature: 10
+
+weblink:
+  entities:
+    - name: Router
+      url: http://192.168.1.1/
+      icon: mdi:router-wireless
+    - name: Home Assistant.io
+      icon: mdi:home
+      url: https://www.home-assistant.io/
+    - name: QNAP
+      icon: mdi:nas
+      url: http://192.168.1.113/
+    - name: NuuskuCam
+      icon: mdi:cctv
+      url: http://192.168.1.16:57154/index.htm
+    - name: Sonoff1
+      icon: mdi:power-socket-eu
+      url: http://192.168.1.119/
+    - name: Sonoff2
+      icon: mdi:power-socket-eu
+      url: http://192.168.1.109/
+    - name: Sonoff4
+      icon: mdi:power-socket-eu
+      url: http://192.168.1.110/
+    - name: Sonoff6
+      icon: mdi:power-socket-eu
+      url: http://192.168.1.122/
+    - name: Sonoff7
+      icon: mdi:power-socket-eu
+      url: http://192.168.1.123/
+
+xiaomi_aqara:
+  discovery_retry: 10
+  gateways:
+    - key: !secret aqarakey
+
+device_tracker:
+  - platform: bluetooth_tracker
+    new_device_defaults:
+      track_new_devices: False
+      hide_if_away: True
+  - platform: ping
+    hosts:
+      hostone: 192.168.1.16
+
+shell_command:
+  rebootpi: ssh pi@127.0.0.1 sudo reboot
+  restartha: ssh pi@127.0.0.1 sudo service home-assistant@homeassistant restart
+  shutdownha: ssh pi@127.0.0.1 sudo service home-assistant@homeassistant stop
+  startha: ssh pi@127.0.0.1 sudo service home-assistant@homeassistant start
+  updatehassbian: ssh pi@127.0.0.1 sudo hassbian-config upgrade hassbian
+  updatehomeassistant: ssh pi@127.0.0.1 sudo hassbian-config upgrade homeassistant
+
+homekit:
+  auto_start: False
+  filter:
+    exclude_entities:
+      # mediaplayers
+      - media_player.kd65x8505c
+      - media_player.apple_tv
+      - media_player.apple_tv_3
+      - remote.apple_tv
+      - media_player.dna_tvhubi
+      - remote.apple_tv_3
+      #weather sensors
+      - sensor.weather_kerava_current
+      - sensor.weather_kerava_humidity
+      - sensor.weather_kerava_temperature
+      #HUE Duplicates
+      - light.bulb_1
+      - light.bulb_2
+      - light.reading_light
+      - light.hue_ambiance_candle_1
+      - light.hue_ambiance_candle_2
+      - light.hue_ambiance_candle_3
+      - light.hue_ambiance_ceiling
+      - light.nikos_light
+      - light.cindis_light
+      - light.quest_room_bulb
+      #Master switches
+      - light.balcony
+      - light.bedroom
+      - light.entrance
+      - light.kitchen
+      - light.living_room
+      - light.quest_room
+      #Unused RF devices
+      - switch.remote_1
+      - switch.remote_2
+      - switch.remote_3
+      - switch.yksi
+      - switch.n1
+      - switch.n2
+      - switch.n3
+      #Wireless buttons
+      - binary_sensor.wall_switch_both_158d0001641c55
+      - binary_sensor.wall_switch_left_158d0001641c55
+      - binary_sensor.wall_switch_right_158d0001641c55
+      - binary_sensor.switch_158d00019ca681
+      #WakeOnLan devices
+      - switch.router
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml

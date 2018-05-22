@@ -1,0 +1,24 @@
+reboot_ha:
+  alias: Restart Home Assistant
+  sequence:
+    - service: shell_command.restartha
+shutdown_ha:
+  alias: Stop Home Assistant
+  sequence:
+    - service: shell_command.shutdownha
+start_ha:
+  alias: Start Home Assistant
+  sequence:
+    - service: shell_command.startha
+reboot_pi:
+  alias: Reboot the Pi
+  sequence:
+    - service: shell_command.rebootpi
+update_hass:
+  alias: Update Hassbian
+  sequence:
+    - service: shell_command.updatehassbian
+update_ha:
+  alias: Update Home Assistant
+  sequence:
+    - service: shell_command.updatehomeassistant
