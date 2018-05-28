@@ -59,6 +59,7 @@
     platform: sun
     # Possible values: sunset, sunrise
     event: sunset
+    # Optional time offset. This example is 45 minutes.
   action:
     - service: homeassistant.turn_on
       entity_id: light.closet_light_left
@@ -70,6 +71,7 @@
     platform: sun
     # Possible values: sunset, sunrise
     event: sunrise
+    # Optional time offset. This example is 45 minutes.
   action:
     - service: homeassistant.turn_off
       entity_id: light.closet_light_left
@@ -81,18 +83,24 @@
     platform: sun
     # Possible values: sunset, sunrise
     event: sunset
+    # Optional time offset. This example is 45 minutes.
   action:
     - service: homeassistant.turn_on
       entity_id: switch.ulko_1
+    #- service: homeassistant.turn_on
+    #  entity_id: switch.plug_158d0001ded2e0
 
 - alias: Turn off Christmas lights on sunrise
   trigger:
     platform: sun
     # Possible values: sunset, sunrise
     event: sunrise
+    # Optional time offset. This example is 45 minutes.
   action:
     - service: homeassistant.turn_off
       entity_id: switch.ulko_1
+    #- service: homeassistant.turn_off
+    #  entity_id: switch.plug_158d0001ded2e0
 
 - alias: Movie time - single click
   trigger:
@@ -230,6 +238,23 @@
     - service: notify.slack
       data_template:
         message: Nuusku has been home alone for 7 hours @niko
+
+- alias: Nuuksu at home for 8 hours
+  trigger:
+    platform: state
+    entity_id: group.family
+    from: 'home'
+    to: 'not_home'
+    for:
+      hours: 8
+  condition:
+    - condition: state
+      entity_id:  device_tracker.hostone
+      state: 'home'
+  action:
+    - service: notify.slack
+      data_template:
+        message: Nuusku has been home alone for 8 hours!!!!! @niko
 
 - alias: Reboot Pi if connection lost to router
   trigger:

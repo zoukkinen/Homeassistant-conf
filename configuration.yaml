@@ -43,7 +43,6 @@ updater:
 discovery:
   ignore:
     - apple_tv
-    - google_cast
 
 # Allows you to issue voice commands from the frontend in enabled browsers
 conversation:
@@ -150,6 +149,23 @@ switch:
     name: router
     mac_address: !secret routermac
     host: 192.168.1.1
+  - platform: command_line
+    name: Playstation
+    switches:
+      playstaton_button:
+        command_on: "ssh pi@127.0.0.1 sudo npx ps4-waker"
+        command_off: "ssh pi@127.0.0.1 sudo npx ps4-waker standby"
+        friendly_name: Playstation power
+
+#Playstation 4
+media_player:
+  - platform: ps4
+    name: Playstation 4
+    host: 192.169.1.101
+    filename: '/home/pi/.ps4-wake.credentials.json'
+    cmd: 'sudo ps4-waker'
+
+
 
 # Text to speech
 tts:
@@ -214,17 +230,18 @@ fan:
 #ffmpeg:
 #  ffmpeg_bin: /usr/bin/avconv
 
-camera:
-  - platform: mjpeg
-    mjpeg_url: !secret nuuskuurl
-    name: Nuusku Cam
-    username: !secret nuuskuuser
-    password: !secret nuuskupass
+#camera:
+#  - platform: mjpeg
+#    mjpeg_url: !secret nuuskuurl
+#    name: Nuusku Cam
+  #  username: !secret nuuskuuser
+  #  password: !secret nuuskupass
   #- platform: ffmpeg
   #  ffmpeg_bin: /usr/bin/avconv
   #  input: !secret nuuskuinput
   #  name: Nuusku Cam2
   #  extra_arguments: -q:v 2
+
 
 #Slack integration
 notify:
@@ -299,6 +316,10 @@ shell_command:
   startha: ssh pi@127.0.0.1 sudo service home-assistant@homeassistant start
   updatehassbian: ssh pi@127.0.0.1 sudo hassbian-config upgrade hassbian
   updatehomeassistant: ssh pi@127.0.0.1 sudo hassbian-config upgrade homeassistant
+  ps4wake: ssh pi@127.0.0.1 sudo npx ps4-waker
+  ps4standby: ssh pi@127.0.0.1 sudo npx ps4-waker standby
+  fortnite: ssh pi@127.0.0.1 sudo npx ps4-waker && sudo npx ps4-waker start CUSA07669
+
 
 homekit:
   auto_start: False
@@ -341,6 +362,7 @@ homekit:
       - switch.n1
       - switch.n2
       - switch.n3
+      - light.himmennin
       #Wireless buttons
       - binary_sensor.wall_switch_both_158d0001641c55
       - binary_sensor.wall_switch_left_158d0001641c55
@@ -348,6 +370,13 @@ homekit:
       - binary_sensor.switch_158d00019ca681
       #WakeOnLan devices
       - switch.router
+      #scripts
+      - script.reboot_pi
+      - script.reboot_ha
+      - script.start_ha
+      - script.shutdown_ha
+      - script.update_hass
+      - script.update_ha
 
 group: !include groups.yaml
 automation: !include automations.yaml

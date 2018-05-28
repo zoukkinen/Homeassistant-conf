@@ -22,3 +22,7 @@ update_ha:
   alias: Update Home Assistant
   sequence:
     - service: shell_command.updatehomeassistant
+startfortnite:
+  alias: Fortnite
+  sequence:
+    - service: shell_command.fortnite
