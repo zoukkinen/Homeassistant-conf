@@ -68,12 +68,12 @@ sensor:
       - weather_current
       - humidity
   - platform: mqtt
-    name: "Kitchen Temperature"
+    name: "Bedroom Temperature"
     state_topic: "stat/Sonoff1/STATUS10"
     value_template: "{{ value_json.StatusSNS.DHT22.Temperature }}"
     unit_of_measurement: "°C"
   - platform: mqtt
-    name: "Kitchen Humidity"
+    name: "Bedroom Humidity"
     state_topic: "stat/Sonoff1/STATUS10"
     value_template: "{{ value_json.StatusSNS.DHT22.Humidity }}"
     unit_of_measurement: "%"
@@ -91,7 +91,6 @@ sensor:
     mac: !secret mifloramac
     name: Beconia flower
     force_update: false
-    median: 3
     monitored_conditions:
       - moisture
       - light
@@ -216,15 +215,15 @@ light:
     retain: true
 
 # Fans
-fan:
-  - platform: mqtt
-    name: "Kitchen fan"
-    command_topic: "cmnd/Sonoff1/power"
-    state_topic: "stat/Sonoff1/POWER"
-    qos: 1
-    payload_on: "ON"
-    payload_off: "OFF"
-    retain: true
+#fan:
+#  - platform: mqtt
+#    name: "Kitchen fan"
+#    command_topic: "cmnd/Sonoff1/power"
+#    state_topic: "stat/Sonoff1/POWER"
+#    qos: 1
+#    payload_on: "ON"
+#    payload_off: "OFF"
+#    retain: true
 
 # Camera
 #ffmpeg:
@@ -278,19 +277,19 @@ weblink:
     - name: NuuskuCam
       icon: mdi:cctv
       url: http://192.168.1.16:57154/index.htm
-    - name: Sonoff1
+    - name: Sonoff1 Bedroom
       icon: mdi:power-socket-eu
-      url: http://192.168.1.119/
-    - name: Sonoff2
+      url: http://192.168.1.126/
+    - name: Sonoff2 old
       icon: mdi:power-socket-eu
       url: http://192.168.1.109/
-    - name: Sonoff4
+    - name: Sonoff4 old
       icon: mdi:power-socket-eu
       url: http://192.168.1.110/
-    - name: Sonoff6
+    - name: Sonoff6 Closer light left
       icon: mdi:power-socket-eu
       url: http://192.168.1.122/
-    - name: Sonoff7
+    - name: Sonoff7 Closer light right
       icon: mdi:power-socket-eu
       url: http://192.168.1.123/
 
@@ -318,7 +317,7 @@ shell_command:
   updatehomeassistant: ssh pi@127.0.0.1 sudo hassbian-config upgrade homeassistant
   ps4wake: ssh pi@127.0.0.1 sudo npx ps4-waker
   ps4standby: ssh pi@127.0.0.1 sudo npx ps4-waker standby
-  fortnite: ssh pi@127.0.0.1 sudo npx ps4-waker && sudo npx ps4-waker start CUSA07669
+  #fortnite: ssh pi@127.0.0.1 sudo npx ps4-waker && sudo npx ps4-waker start CUSA07669 //did not work
 
 
 homekit:
@@ -377,6 +376,32 @@ homekit:
       - script.shutdown_ha
       - script.update_hass
       - script.update_ha
+      #automations
+      - automation.ask_bedroom_temperature_mqtt
+      - automation.movie_time__single_click
+      - automation.nuuksu_at_home_for_5_hours
+      - automation.nuuksu_at_home_for_6_hours
+      - automation.nuuksu_at_home_for_7_hours
+      - automation.nuuksu_at_home_for_8_hours
+      - automation.reboot_pi_if_connection_lost_to_router
+      - automation.restart_temperature_monitoring_next_morning_930
+      - automation.shit_going_down_ultra_toggle__long_press
+      - automation.start_homekit
+      - automation.temperature_above_26c
+      - automation.toggle_corridor_light__wireless_right
+      - automation.toggle_other__wireless_left
+      - automation.turn_lights_off_when_no_one_at_home_for_45_min
+      - automation.turn_off_christmas_lights_on_sunrise
+      - automation.turn_off_closet_lights_on_sunriset
+      - automation.turn_off_corridor_light_12_minutes_after_last_movement
+      - automation.turn_on_christmas_lights_on_sunset
+      - automation.turn_on_closet_lights_on_sunset
+      - automation.turn_on_corridor_light_when_door_is_opened
+      - automation.turn_on_corridor_light_when_there_is_movement
+      - automation.turn_on_lights_to_living_room_and_kitschen__double_click
+      #Groups
+      #in the future, when they add these to the Homekit
+
 
 group: !include groups.yaml
 automation: !include automations.yaml

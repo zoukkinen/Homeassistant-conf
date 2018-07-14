@@ -10,7 +10,7 @@
 #      topic: "cmnd/Sonoff2/status"
 #    service: mqtt.publish
 - id: ask_temp2
-  alias: Ask Kitchen temperature mqtt
+  alias: Ask Bedroom temperature mqtt
   trigger:
   - minutes: '/15'
     platform: time

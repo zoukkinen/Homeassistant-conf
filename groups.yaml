@@ -17,9 +17,6 @@ kitchen:
   entities:
   - light.kitchen_bulb
   - switch.wall_switch_158d000159abf6
-  - fan.kitchen_fan
-  - sensor.kitchen_temperature
-  - sensor.kitchen_humidity
   - binary_sensor.water_leak_sensor_158d0001bb7039
 balcony:
   name: Balcony
@@ -62,6 +59,8 @@ master_bedroom:
   - light.hue_ambiance_ceiling
   - light.nikos_light
   - light.cindis_light
+  - sensor.bedroom_temperature
+  - sensor.bedroom_humidity
 family:
   name: Family
   view: false
