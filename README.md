@@ -83,6 +83,8 @@ climate:
     - high
     - auto
 
+  # Test new LovalaceUI
+    - https://www.home-assistant.io/lovelace/
 
 
   # Battery level alerts and status monitor
