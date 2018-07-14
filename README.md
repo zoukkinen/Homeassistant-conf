@@ -34,3 +34,9 @@ Used devices:
 
 - HomeKit
   - https://www.home-assistant.io/components/homekit/
+
+- Coming soon: Broadlink RM mini 3 and new Aquara switches
+  - http://www.ibroadlink.com/rmMini3/
+  - https://www.home-assistant.io/components/switch.broadlink/
+
+- Working with Embelin (Webasto ThermoConnect) to find out if they can open their API to control GSM/GPRS car heating systems via homeassistant.
