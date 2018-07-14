@@ -15,29 +15,29 @@ switch.plug_158d0001ded2e0:
   friendly_name: "Sofa Lights"
 
 binary_sensor.switch_158d00019ca681:
-  friendly_name: Movie-mode switch
+  friendly_name: Movie-mode Switch
   hidden: true
 
 binary_sensor.door_window_sensor_158d000171eafd:
-  friendly_name: "Door sensor"
+  friendly_name: "Door Sensor"
 
 binary_sensor.motion_sensor_158d00016d56c6:
-  friendly_name: "Entrance motion sensor"
+  friendly_name: "Entrance Motion Sensor"
 
 binary_sensor.water_leak_sensor_158d0001bb7039:
-  friendly_name: "Kitchen water leak sensor"
+  friendly_name: "Kitchen Water Leak Sensor"
 
 light.gateway_light_34ce00fa7af1:
   friendly_name: "Gateway Light"
 
 sensor.humidity_158d00019ce67e:
-  friendly_name: "Living Room humidity"
+  friendly_name: "Living Room Humidity"
 
 sensor.illumination_34ce00fa7af1:
-  friendly_name: "Entrance illumination"
+  friendly_name: "Entrance Illumination"
 
 sensor.temperature_158d00019ce67e:
-  friendly_name: "Living Room temperature"
+  friendly_name: "Living Room Temperature"
 
 binary_sensor.wall_switch_both_158d0001641c55:
   friendly_name: "Wireless button both"
@@ -55,13 +55,13 @@ switch.wall_switch_158d000159abf6:
   friendly_name: "Kitchen Lights"
 
 switch.wall_switch_left_158d0001f423d6:
-  friendly_name: "Living Room Light window"
+  friendly_name: "Living Room Light Window"
 
 switch.wall_switch_right_158d0001f423d6:
   friendly_name: "Living Room Chandelier"
 
 switch.ulko_1:
-  friendly_name: "Christmas lights"
+  friendly_name: "Christmas Lights"
 
 switch.router:
   friendly_name: "Network Router"

@@ -419,7 +419,8 @@ homekit:
       - automation.turn_on_closet_lights_on_sunset
       - automation.turn_on_corridor_light_when_door_is_opened
       - automation.turn_on_corridor_light_when_there_is_movement
-      - automation.turn_on_lights_to_living_room_and_kitschen__double_click
+      - automation.power_state_on_ha_startup
+      - automation.turn_on_lights_to_living_room_and_kitchen__double_click
       #Groups
       #in the future, when they add these to the Homekit
 
