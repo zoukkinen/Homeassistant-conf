@@ -70,22 +70,22 @@ sensor:
   - platform: mqtt
     name: "Bedroom Temperature"
     state_topic: "stat/Sonoff1/STATUS10"
-    value_template: "{{ value_json.StatusSNS.DHT22.Temperature }}"
+    value_template: "{{ value_json.StatusSNS.SI7021.Temperature }}"
     unit_of_measurement: "°C"
   - platform: mqtt
     name: "Bedroom Humidity"
     state_topic: "stat/Sonoff1/STATUS10"
-    value_template: "{{ value_json.StatusSNS.DHT22.Humidity }}"
+    value_template: "{{ value_json.StatusSNS.SI7021.Humidity }}"
     unit_of_measurement: "%"
 #  - platform: mqtt
 #    name: "Corridor Temperature"
 #    state_topic: "stat/Sonoff2/STATUS10"
-#    value_template: "{{ value_json.StatusSNS.DHT22.Temperature }}"
+#    value_template: "{{ value_json.StatusSNS.SI7021.Temperature }}"
 #    unit_of_measurement: "°C"
 #  - platform: mqtt
 #    name: "Corridor Humidity"
 #    state_topic: "stat/Sonoff2/STATUS10"
-#    value_template: "{{ value_json.StatusSNS.DHT22.Humidity }}"
+#    value_template: "{{ value_json.StatusSNS.SI7021.Humidity }}"
 #    unit_of_measurement: "%"
   - platform: miflora
     mac: !secret mifloramac
@@ -189,14 +189,14 @@ light:
 #    payload_on: "ON"
 #    payload_off: "OFF"
 #    retain: true
-#  - platform: mqtt
-#    name: "Led strip"
-#    command_topic: "cmnd/Sonoff4/power"
-#    state_topic: "stat/Sonoff4/POWER"
-#    qos: 1
-#    payload_on: "ON"
-#    payload_off: "OFF"
-#    retain: true
+  - platform: mqtt
+    name: "Bedroom led lights"
+    command_topic: "cmnd/Sonoff1/power"
+    state_topic: "stat/Sonoff1/POWER"
+    qos: 1
+    payload_on: "ON"
+    payload_off: "OFF"
+    retain: true
   - platform: mqtt
     name: "Closet light left"
     command_topic: "cmnd/Sonoff6/power"
@@ -218,8 +218,8 @@ light:
 #fan:
 #  - platform: mqtt
 #    name: "Kitchen fan"
-#    command_topic: "cmnd/Sonoff1/power"
-#    state_topic: "stat/Sonoff1/POWER"
+#    command_topic: "cmnd/Sonoff4/power"
+#    state_topic: "stat/Sonoff4/POWER"
 #    qos: 1
 #    payload_on: "ON"
 #    payload_off: "OFF"
@@ -402,7 +402,12 @@ homekit:
       #Groups
       #in the future, when they add these to the Homekit
 
-
+logger:
+  default: warning
+  logs:
+    homeassistant.components.homekit: debug
+    pyhap: debug
+    
 group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml

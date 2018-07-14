@@ -130,7 +130,7 @@
     - service: homeassistant.toggle
       entity_id: group.all_switches
 
-- alias: Turn on lights to living room and kitschen - double click
+- alias: Turn on lights to living room and kitchen - double click
   trigger:
     platform: event
     event_type: click
