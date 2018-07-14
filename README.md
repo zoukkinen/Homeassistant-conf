@@ -35,7 +35,7 @@ Used devices:
 - Custom component
   - media player ps4
     - https://github.com/hmn/home-assistant-config/wiki/media_player_ps4
-    
+
 - HomeKit
   - https://www.home-assistant.io/components/homekit/
 
@@ -44,3 +44,41 @@ Used devices:
   - https://www.home-assistant.io/components/switch.broadlink/
 
 - Working with Embelin (Webasto ThermoConnect) to find out if they can open their API to control GSM/GPRS car heating systems via homeassistant.
+
+# Memo for todo-branch
+For Broadlink:
+
+https://github.com/vpnmaster/homeassistant-custom-components
+
+How to switch off the AC unit using this component? There is no “off” control. Do I need to add “off” to one of the custom mode?:
+  Yes. If you are using HomeKit is better to add idle in customize->operations.
+Yes. idle and off is the same command. Home kit sends idle instead of off command
+
+  Hi,
+  Please make a folder with name “custom_components” into your .homeassistant folder.
+  Make another folder with name “climate” into custom_components folder.
+  Put broadlink.py 43 inside “climate” folder and restart Home Assistant.
+
+climate:
+  - platform: broadlink
+    name: LG
+    host: 192.168.x.x
+    mac: 'BB:BB:BB:BB:BB:BB’
+    ircodes_ini: 'broadlink_climate_codes/lg_all.ini’
+    min_temp: 18
+    max_temp: 30
+    target_temp: 26
+    temp_sensor: sensor.living_room_temperature
+    default_operation: idle
+    default_fan_mode: low
+    customize:
+    operations:
+    - idle
+    - cool
+    - heat
+    - auto
+    fan_modes:
+    - low
+    - mid
+    - high
+    - auto
