@@ -86,5 +86,5 @@ climate:
 
 
   # Battery level alerts and status monitor
-    https://community.home-assistant.io/t/howto-create-battery-alert-without-creating-a-template-for-every-device/30576/6
-    https://github.com/notoriousbdg/Home-AssistantConfig/blob/master/packages/battery_alert.yaml
+  - https://community.home-assistant.io/t/howto-create-battery-alert-without-creating-a-template-for-every-device/30576/6
+  - https://github.com/notoriousbdg/Home-AssistantConfig/blob/master/packages/battery_alert.yaml
