@@ -61,6 +61,7 @@ master_bedroom:
   - light.cindis_light
   - sensor.bedroom_temperature
   - sensor.bedroom_humidity
+  - light.bedroom_led_lights
 family:
   name: Family
   view: false
