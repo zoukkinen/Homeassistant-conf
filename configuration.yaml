@@ -176,8 +176,20 @@ mqtt:
   broker: localhost
   port: 1883
   client_id: home-assistant-1
+  keepalive: 60
   username: pi
   password: !secret mqtt_password
+  protocol: 3.1
+  birth_message:
+    topic: "tele/hass1/LWT"
+    payload: "Online"
+    qos: 1
+    retain: true
+  will_message:
+    topic: "tele/hass1/LWT"
+    payload: "Offline"
+    qos: 1
+    retain: true
 
 # Lights
 light:
@@ -191,27 +203,36 @@ light:
 #    retain: true
   - platform: mqtt
     name: "Bedroom led lights"
-    command_topic: "cmnd/Sonoff1/power"
-    state_topic: "stat/Sonoff1/POWER"
+    state_topic: "stat/Sonoff1/POWER1"
+    command_topic: "cmnd/Sonoff1/POWER1"
+    availability_topic: "tele/Sonoff1/LWT"
     qos: 1
     payload_on: "ON"
     payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
     retain: true
   - platform: mqtt
     name: "Closet light left"
-    command_topic: "cmnd/Sonoff6/power"
-    state_topic: "stat/Sonoff6/POWER"
+    state_topic: "stat/Sonoff6/POWER1"
+    command_topic: "cmnd/Sonoff6/POWER1"
+    availability_topic: "tele/Sonoff6/LWT"
     qos: 1
     payload_on: "ON"
     payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
     retain: true
   - platform: mqtt
     name: "Closet light right"
-    command_topic: "cmnd/Sonoff7/power"
-    state_topic: "stat/Sonoff7/POWER"
+    state_topic: "stat/Sonoff7/POWER1"
+    command_topic: "cmnd/Sonoff7/POWER1"
+    availability_topic: "tele/Sonoff7/LWT"
     qos: 1
     payload_on: "ON"
     payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
     retain: true
 
 # Fans

@@ -32,6 +32,10 @@ Used devices:
 
 - Bluetooth device tracker
 
+- Custom component
+  - media player ps4
+    - https://github.com/hmn/home-assistant-config/wiki/media_player_ps4
+    
 - HomeKit
   - https://www.home-assistant.io/components/homekit/
 
