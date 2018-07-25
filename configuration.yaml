@@ -28,7 +28,7 @@ http:
   api_password: !secret http_password
   # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
   base_url: !secret baseurl
-  cors_allowed_origins: '*'
+  #cors_allowed_origins: '*'
 
 # Checks for available updates
 # Note: This component will send some information about your system to
@@ -155,6 +155,22 @@ switch:
         command_on: "ssh pi@127.0.0.1 sudo npx ps4-waker"
         command_off: "ssh pi@127.0.0.1 sudo npx ps4-waker standby"
         friendly_name: Playstation power
+  - platform: broadlink
+    host: 192.168.1.139
+    mac: '78:0f:77:5a:c9:76'
+    type: rm_mini
+    friendly_name: 'BroadLink RM mini 3'
+    timeout: 15
+    switches:
+      # Sony amlifier as radio
+      kitchen_radio:
+        friendly_name: "Kitchen Radio"
+        command_on: 'JgBgAAABI5gTExQ2ExMSOBM4EjkUNhMSEzgSExM4EhMVEhMREhMTOBI4EzgUNxI4EzgSExURFBEUERUREhMSExMTEjgSORQ2EwAFIAABJEcSAAxgAAEjSBIADGAAASJIFQANBQAAAAAAAAAA'
+        command_off: 'JgBoAAABJJcVERQ2ExMSOBU2FDcUNhMTEjgVERQ2FBISExITEhMVNhQ3FDYVNhI4FTYUERUQFREUERURFBEUERURFDYVNhQ2EwAFIAABJEcVAAxdAAElRhIADGAAASRHFAAMXgABI0gUAA0F='
+      technibel_aircon:
+        friendly_name: "Air Coditioner Power"
+        command_on: 'JgDCAGV5QSAfPiAcIx1AIB8dIB8gHyAgHztBHyAgHx0eISAfIB8gHR8gHyAgHyAcICAfIB8gIBwgHyAgHyAfO0EfZXpBHyA+Hx0jHEEfIB0fICAfIB8gO0AgIB8gHCAgHyAfICAcIB8gIB8gHx0fICAfHyEfHR8gIB8gHyA7QCBlekEfID0gHSIdQR8gHCAgHyAfICA6QSAfIB8dIB8gHyAgHx0fIB8gIB8gHR8gHyAeISAcICAfIB8gIDpBIIMAAnMIAA0FAAAAAAAA=='
+        command_off: 'JgDCAGV5QSAfPiAcIx1AIB8dIB8gHyAgHztBHyAgHx0eISAfIB8gHR8gHyAgHyAcICAfIB8gIBwgHyAgHyAfO0EfZXpBHyA+Hx0jHEEfIB0fICAfIB8gO0AgIB8gHCAgHyAfICAcIB8gIB8gHx0fICAfHyEfHR8gIB8gHyA7QCBlekEfID0gHSIdQR8gHCAgHyAfICA6QSAfIB8dIB8gHyAgHx0fIB8gIB8gHR8gHyAeISAcICAfIB8gIDpBIIMAAnMIAA0FAAAAAAAA=='
 
 #Playstation 4
 media_player:
@@ -164,7 +180,26 @@ media_player:
     filename: '/home/pi/.ps4-wake.credentials.json'
     cmd: 'sudo ps4-waker'
 
-
+climate:
+  - platform: broadlink
+    name: Air Conditioner
+    host: 192.168.1.139
+    mac: '78:0f:77:5a:c9:76'
+    ircodes_ini: 'broadlink_climate_codes/technibel.ini'
+    min_temp: 16
+    max_temp: 30
+    target_temp: 24
+    target_temp_step: 1
+    temp_sensor: sensor.temperature_158d00019ce67e
+    default_operation: idle
+    default_fan_mode: auto
+    customize:
+      operations:
+        - idle
+        - cool
+        - 'off'
+      fan_modes:
+        - auto
 
 # Text to speech
 tts:
@@ -309,10 +344,10 @@ weblink:
       url: http://192.168.1.110/
     - name: Sonoff6 Closer light left
       icon: mdi:power-socket-eu
-      url: http://192.168.1.122/
+      url: http://192.168.1.123/
     - name: Sonoff7 Closer light right
       icon: mdi:power-socket-eu
-      url: http://192.168.1.123/
+      url: http://192.168.1.122/
 
 xiaomi_aqara:
   discovery_retry: 10
@@ -388,6 +423,9 @@ homekit:
       - binary_sensor.wall_switch_left_158d0001641c55
       - binary_sensor.wall_switch_right_158d0001641c55
       - binary_sensor.switch_158d00019ca681
+      - binary_sensor.switch_158d000210bf30
+      #Air Con extra power button
+      - switch.technibel_aircon
       #WakeOnLan devices
       - switch.router
       #scripts
@@ -421,6 +459,7 @@ homekit:
       - automation.turn_on_corridor_light_when_there_is_movement
       - automation.power_state_on_ha_startup
       - automation.turn_on_lights_to_living_room_and_kitchen__double_click
+      - automation.air_conditioner_power_on_button
       #Groups
       #in the future, when they add these to the Homekit
 

@@ -11,6 +11,7 @@ entrace:
   - light.hue_ambiance_candle_1
   - light.hue_ambiance_candle_2
   - light.hue_ambiance_candle_3
+  - binary_sensor.switch_158d000210bf30
 kitchen:
   name: Kitchen
   view: false
@@ -22,8 +23,8 @@ balcony:
   name: Balcony
   view: false
   entities:
-  - sensor.ulko_lampotila_temperature
-  - sensor.ulko_lampotila_humidity
+  - sensor.balcony_temperature
+  - sensor.balcony_humidity
   - switch.ulko_1
   - binary_sensor.flower
   - plant.beconia_plant

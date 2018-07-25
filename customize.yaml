@@ -18,6 +18,10 @@ binary_sensor.switch_158d00019ca681:
   friendly_name: Movie-mode Switch
   hidden: true
 
+binary_sensor.switch_158d000210bf30:
+  friendly_name: A/C button
+  hidden: true
+
 binary_sensor.door_window_sensor_158d000171eafd:
   friendly_name: "Door Sensor"
 
