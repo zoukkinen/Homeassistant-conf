@@ -1,28 +1,25 @@
-reboot_ha:
-  alias: Restart Home Assistant
+'1609849815931':
+  alias: Xiaomi vacuum out from the dark
   sequence:
-    - service: shell_command.restartha
-shutdown_ha:
-  alias: Stop Home Assistant
-  sequence:
-    - service: shell_command.shutdownha
-start_ha:
-  alias: Start Home Assistant
-  sequence:
-    - service: shell_command.startha
-reboot_pi:
-  alias: Reboot the Pi
-  sequence:
-    - service: shell_command.rebootpi
-update_hass:
-  alias: Update Hassbian
-  sequence:
-    - service: shell_command.updatehassbian
-update_ha:
-  alias: Update Home Assistant
-  sequence:
-    - service: shell_command.updatehomeassistant
-#startfortnite:
-#  alias: Fortnite
-#  sequence:
-#    - service: shell_command.fortnite
+  - service: xiaomi_miio.vacuum_remote_control_start
+    data: {}
+    entity_id: vacuum.xiaomi_vacuum_cleaner
+  - delay: 00:00:14
+  - service: xiaomi_miio.vacuum_remote_control_move
+    data:
+      duration: 800
+      velocity: 0.27
+      rotation: 0
+    entity_id: vacuum.xiaomi_vacuum_cleaner
+  - delay: 00:00:02
+  - service: xiaomi_miio.vacuum_remote_control_move
+    data:
+      duration: 1400
+      velocity: 0.29
+      rotation: 179
+    entity_id: vacuum.xiaomi_vacuum_cleaner
+  - delay: 00:00:03
+  - service: xiaomi_miio.vacuum_remote_control_stop
+    data: {}
+    entity_id: vacuum.xiaomi_vacuum_cleaner
+  mode: single

@@ -27,14 +27,7 @@ Used devices:
   - https://www.karkkainen.com/verkkokauppa/proove-smart-home-large-aloituspakkaus
 
 
-- Miflora sensor
-  - https://www.gearbest.com/other-garden-supplies/pp_373947.html
-
 - Bluetooth device tracker
-
-- Custom component
-  - media player ps4
-    - https://github.com/hmn/home-assistant-config/wiki/media_player_ps4
     
 - HomeKit
   - https://www.home-assistant.io/components/homekit/
@@ -43,4 +36,3 @@ Used devices:
   - http://www.ibroadlink.com/rmMini3/
   - https://www.home-assistant.io/components/switch.broadlink/
 
-- Working with Embelin (Webasto ThermoConnect) to find out if they can open their API to control GSM/GPRS car heating systems via homeassistant.

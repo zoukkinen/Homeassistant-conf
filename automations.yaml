@@ -1,321 +1,219 @@
-#- id: ask_temp
-#  alias: "\u2018Ask temperature\u2019"
-#  trigger:
-#  - minutes: '/15'
-#    platform: time
-#    seconds: 0
-#  action:
-#  - data:
-#      payload: "10"
-#      topic: "cmnd/Sonoff2/status"
-#    service: mqtt.publish
-- id: ask_temp2
-  alias: Ask Bedroom temperature mqtt
+- id: '1609846882655'
+  alias: Christmas lights off on sunrise
+  description: Christmas lights on the balcony
   trigger:
-  - minutes: '/15'
-    platform: time
-    seconds: 0
-  action:
-  - data:
-      payload: "10"
-      topic: "cmnd/Sonoff1/Status"
-    service: mqtt.publish
-
-- alias: Turn on corridor light when there is movement
-  trigger:
-    platform: state
-    entity_id: binary_sensor.motion_sensor_158d00016d56c6
-    to: 'on'
-  action:
-    - service: light.turn_on
-      data_template:
-        entity_id: light.hue_ambiance_candle_1, light.hue_ambiance_candle_2, light.hue_ambiance_candle_3
-        brightness_pct: 100
-
-- alias: Turn off corridor light 12 minutes after last movement
-  trigger:
-    platform: state
-    entity_id: binary_sensor.motion_sensor_158d00016d56c6
-    to: 'off'
-    for:
-      minutes: 12
-  action:
-    service: light.turn_off
-    entity_id: light.hue_ambiance_candle_1, light.hue_ambiance_candle_2, light.hue_ambiance_candle_3
-
-- alias: Turn on corridor light when door is opened
-  trigger:
-    platform: state
-    entity_id: binary_sensor.door_window_sensor_158d000171eafd
-    to: 'on'
-  action:
-    - service: light.turn_on
-      data_template:
-        entity_id: light.hue_ambiance_candle_1, light.hue_ambiance_candle_2, light.hue_ambiance_candle_3
-        brightness_pct: 100
-
-- alias: Turn on closet lights on sunset
-  trigger:
-    platform: sun
-    # Possible values: sunset, sunrise
-    event: sunset
-    # Optional time offset. This example is 45 minutes.
-  action:
-    - service: homeassistant.turn_on
-      entity_id: light.closet_light_left
-    - service: homeassistant.turn_on
-      entity_id: light.closet_light_right
-
-- alias: Turn off closet lights on sunriset
-  trigger:
-    platform: sun
-    # Possible values: sunset, sunrise
+  - platform: sun
     event: sunrise
-    # Optional time offset. This example is 45 minutes.
+  condition: []
   action:
-    - service: homeassistant.turn_off
-      entity_id: light.closet_light_left
-    - service: homeassistant.turn_off
-      entity_id: light.closet_light_right
-
-- alias: Turn on Christmas lights on sunset
+  - type: turn_off
+    device_id: c0db316b92d2b2845d30fcdc5e83a0e4
+    entity_id: switch.balcony_christmas_lights
+    domain: switch
+  mode: single
+- id: '1609846908010'
+  alias: Christmas lights on on sunset
+  description: Christmas lights on the balcony
   trigger:
-    platform: sun
-    # Possible values: sunset, sunrise
+  - platform: sun
     event: sunset
-    # Optional time offset. This example is 45 minutes.
+  condition: []
   action:
-    - service: homeassistant.turn_on
-      entity_id: switch.ulko_1
-    #- service: homeassistant.turn_on
-    #  entity_id: switch.plug_158d0001ded2e0
-
-- alias: Turn off Christmas lights on sunrise
+  - type: turn_on
+    device_id: c0db316b92d2b2845d30fcdc5e83a0e4
+    entity_id: switch.balcony_christmas_lights
+    domain: switch
+  mode: single
+- id: '1609846955059'
+  alias: Closet lights off on sunrise
+  description: ''
   trigger:
-    platform: sun
-    # Possible values: sunset, sunrise
+  - platform: sun
     event: sunrise
-    # Optional time offset. This example is 45 minutes.
+  condition: []
   action:
-    - service: homeassistant.turn_off
-      entity_id: switch.ulko_1
-    #- service: homeassistant.turn_off
-    #  entity_id: switch.plug_158d0001ded2e0
-
-- alias: Movie time - single click
+  - type: turn_off
+    device_id: ae7eb858d256e19e538a313239fec30f
+    entity_id: switch.plug_158d0001ded2e0
+    domain: switch
+  mode: single
+- id: '1609846972950'
+  alias: Closet lights on on sunset
+  description: ''
   trigger:
-    platform: event
-    event_type: click
+  - platform: sun
+    event: sunset
+  condition: []
+  action:
+  - type: turn_on
+    device_id: ae7eb858d256e19e538a313239fec30f
+    entity_id: switch.plug_158d0001ded2e0
+    domain: switch
+  mode: single
+- id: '1609847148508'
+  alias: Radio toggle
+  description: ''
+  trigger:
+  - platform: event
+    event_type: xiaomi_aqara.click
+    event_data:
+      entity_id: binary_sensor.wall_switch_left_158d00054b1913
+      click_type: single
+  - platform: event
+    event_type: xiaomi_aqara.click
     event_data:
       entity_id: binary_sensor.switch_158d00019ca681
       click_type: single
+  condition: []
   action:
-    - service: light.turn_on
-      entity_id: light.closet_light_left, light.closet_light_right, switch.plug_158d0001ded2e0
-    - service: light.turn_off
-      entity_id: light.hue_ambiance_candle_1, light.hue_ambiance_candle_2, light.hue_ambiance_candle_3
-    - service: switch.turn_off
-      entity_id: switch.wall_switch_right_158d0001f423d6, switch.wall_switch_158d000159abf6, switch.wall_switch_left_158d0001f423d6
-
-- alias: Shit going down (ultra toggle) - long press
+  - service: switch.toggle
+    data: {}
+    entity_id: switch.radio
+  mode: single
+- id: '1609851689871'
+  alias: Dobby goes to sleep
+  description: ''
+  trigger: []
+  condition: []
+  action:
+  - service: vacuum.stop
+    data: {}
+    entity_id: vacuum.xiaomi_vacuum_cleaner
+  - delay: 00:00:02
+  - service: vacuum.return_to_base
+    data: {}
+    entity_id: vacuum.xiaomi_vacuum_cleaner
+  mode: single
+- id: '1609851900043'
+  alias: Turn on Dobby
+  description: ''
   trigger:
-    platform: event
-    event_type: click
+  - platform: event
+    event_type: xiaomi_aqara.click
+    event_data:
+      entity_id: binary_sensor.switch_158d000210bf30
+      click_type: single
+  - platform: event
+    event_type: xiaomi_aqara.click
+    event_data:
+      entity_id: binary_sensor.wall_switch_right_158d00054b1913
+      click_type: single
+  condition: []
+  action:
+  - service: homeassistant.toggle
+    data: {}
+    entity_id: switch.hoover
+  mode: single
+- id: '1609859278962'
+  alias: Movie time
+  description: ''
+  trigger:
+  - platform: event
+    event_type: xiaomi_aqara.click
     event_data:
       entity_id: binary_sensor.switch_158d00019ca681
       click_type: long_click_press
+  condition: []
   action:
-    - service: homeassistant.toggle
-      entity_id: group.all_lights
-    - service: homeassistant.toggle
-      entity_id: group.all_switches
-
-- alias: Turn on lights to living room and kitchen - double click
+  - service: media_player.turn_off
+    data:
+      entity_id: media_player.ne_6451_s10_0022614c0060_2
+  - service: homeassistant.turn_off
+    data: {}
+    entity_id: switch.wall_switch_158d000159abf6
+  - service: homeassistant.turn_off
+    data: {}
+    entity_id: light.desk_lamp
+  mode: single
+- id: '1609863409048'
+  alias: Corridor lights off
+  description: ''
   trigger:
-    platform: event
-    event_type: click
-    event_data:
-      entity_id: binary_sensor.switch_158d00019ca681
-      click_type: double
+  - platform: state
+    entity_id: sensor.corridor_movement
+    to: 'true'
+  condition: []
   action:
-    - service: light.turn_on
-      data_template:
-        entity_id: light.hue_ambiance_candle_1, light.hue_ambiance_candle_2, light.hue_ambiance_candle_3
-        brightness_pct: 100
-    - service: switch.turn_on
-      entity_id: switch.wall_switch_right_158d0001f423d6, switch.wall_switch_158d000159abf6, switch.wall_switch_left_158d0001f423d6
-
-- alias: Toggle corridor light - Wireless right
+  - service: homeassistant.turn_off
+    entity_id: switch.wall_switch_158d000159abf6
+  mode: single
+- id: '1609863693369'
+  alias: Corridor lights on
+  description: ''
   trigger:
-    platform: event
-    event_type: click
-    event_data:
-      entity_id: binary_sensor.wall_switch_right_158d0001641c55
-      click_type: single
-  action:
-    - service: light.toggle
-      entity_id: light.hue_ambiance_candle_1, light.hue_ambiance_candle_2, light.hue_ambiance_candle_3
-
-
-- alias: Toggle other - Wireless left
-  trigger:
-    platform: event
-    event_type: click
-    event_data:
-      entity_id: binary_sensor.wall_switch_left_158d0001641c55
-      click_type: single
-  action:
-    - service: switch.toggle
-      entity_id: switch.wall_switch_right_158d0001f423d6, switch.wall_switch_158d000159abf6
-
-
-- alias: Temperature above 26C
-  trigger:
-    platform: numeric_state
-    entity_id: sensor.Temperature_158d00019ce67e
-    above: 26
+  - platform: state
+    entity_id: binary_sensor.door_window_sensor_158d0002e32aff
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.motion_sensor_158d00016d56c6
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.motion_sensor_158d0002ead576
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.motion_sensor_158d0002ec3445
+    to: 'on'
   condition:
-    - condition: state
-      entity_id: device_tracker.hostone
-      state: 'home'
+  - condition: state
+    entity_id: switch.wall_switch_158d000159abf6
+    state: 'off'
   action:
-    - service: notify.slack
-      data_template:
-        message: Home temperature above 26'C!
-    - service: homeassistant.turn_off
-      entity_id: automation.temperature_above_26C
-
-
-- alias: Nuuksu at home for 5 hours
+  - service: homeassistant.turn_on
+    data: {}
+    entity_id: switch.wall_switch_158d000159abf6
+  mode: single
+- id: '1609872556859'
+  alias: Change correct channel to radio when casting is on
+  description: ''
   trigger:
-    platform: state
-    entity_id: group.family
-    from: 'home'
-    to: 'not_home'
-    for:
-      hours: 5
-  condition:
-    - condition: state
-      entity_id:  device_tracker.hostone
-      state: 'home'
+  - platform: state
+    entity_id: media_player.office_speaker
+    to: playing
+  condition: []
   action:
-    - service: notify.slack
-      data_template:
-        message: Nuusku has been home alone for 5 hours
-
-
-- alias: Nuuksu at home for 6 hours
+  - service: media_player.turn_on
+    data: {}
+    entity_id: media_player.ne_6451_s10_0022614c0060_2
+  - service: media_player.select_source
+    data:
+      source: Lisälaite
+    entity_id: media_player.ne_6451_s10_0022614c0060_2
+  mode: single
+- id: '1609872675636'
+  alias: Change correct channel to radio when casting stops
+  description: ''
   trigger:
-    platform: state
-    entity_id: device_tracker.hostone
-    from: 'not_home'
-    to: 'home'
-    for:
-      hours: 6
-  condition:
-    - condition: state
-      entity_id: group.family
-      state: 'not_home'
-  action:
-    - service: notify.slack
-      data_template:
-        message: Nuusku has been home alone for 6 hours @niko
-
-
-- alias: Nuuksu at home for 7 hours
-  trigger:
-    platform: state
-    entity_id: group.family
-    from: 'home'
-    to: 'not_home'
-    for:
-      hours: 7
-  condition:
-    - condition: state
-      entity_id:  device_tracker.hostone
-      state: 'home'
-  action:
-    - service: notify.slack
-      data_template:
-        message: Nuusku has been home alone for 7 hours @niko
-
-- alias: Nuuksu at home for 8 hours
-  trigger:
-    platform: state
-    entity_id: group.family
-    from: 'home'
-    to: 'not_home'
-    for:
-      hours: 8
-  condition:
-    - condition: state
-      entity_id:  device_tracker.hostone
-      state: 'home'
-  action:
-    - service: notify.slack
-      data_template:
-        message: Nuusku has been home alone for 8 hours!!!!! @niko
-
-- alias: Reboot Pi if connection lost to router
-  trigger:
-    platform: state
-    entity_id: switch.router
+  - platform: state
+    entity_id: media_player.office_speaker
     to: 'off'
-    for:
-      minutes: 5
+  condition: []
   action:
-    - service: notify.slack
-      data_template:
-        message: REBOOT - This was done because HA lost connection to the router @niko
-    - service: homeassistant.turn_on
-      entity_id: script.reboot_pi
-
-- alias: Restart temperature monitoring next morning 9:30
+  - service: media_player.select_source
+    data:
+      source: Internet-radio
+    entity_id: media_player.ne_6451_s10_0022614c0060_2
+  - delay: 00:00:02
+  - service: media_player.turn_off
+    data: {}
+    entity_id: media_player.ne_6451_s10_0022614c0060_2
+  mode: single
+- id: '1609945423140'
+  alias: Doppy can come out
+  description: ''
   trigger:
-    platform: time
-    at: '09:30:00'
+  - platform: event
+    event_type: xiaomi_aqara.click
+    event_data:
+      entity_id: binary_sensor.switch_158d000210bf30
+      click_type: long_click_press
+  - platform: event
+    event_type: xiaomi_aqara.click
+    event_data:
+      entity_id: binary_sensor.wall_switch_right_158d00054b1913
+      click_type: long_click_press
+  condition: []
   action:
-    - service: homeassistant.turn_on
-      entity_id: automation.temperature_above_26C
-
-- alias: Turn lights off when no one at home for 45 min
-  trigger:
-    platform: state
-    entity_id: group.family
-    from: 'home'
-    to: 'not_home'
-    for:
-      minutes: 45
-  action:
-    - service: homeassistant.turn_off
-      entity_id: switch.wall_switch_left_158d0001f423d6, switch.wall_switch_right_158d0001f423d6, switch.wall_switch_158d000159abf6, light.bedroom, light.corridor, light.quest_room
-
-- alias: Start HomeKit
-  trigger:
-    - platform: homeassistant
-      event: start
-  action:
-    - delay: 00:05  # Waits 5 minutes
-    - service: homekit.start
-
-- alias: "Power state on HA start-up"
-  trigger:
-    platform: homeassistant
-    event: start
-  action:
-    - service: mqtt.publish
-      data:
-        topic: "cmnd/sonoffs/power1"
-        payload: ""
-    - service: mqtt.publish
-      data:
-        topic: "cmnd/sonoffs/power2"
-        payload: ""
-    - service: mqtt.publish
-      data:
-        topic: "cmnd/sonoffs/power3"
-        payload: "" 
-    - service: mqtt.publish
-      data:
-        topic: "cmnd/sonoffs/power4"
-        payload: ""
+  - service: script.turn_on
+    data: {}
+    entity_id: script.1609849815931
+  mode: single

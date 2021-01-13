@@ -1,434 +1,86 @@
-homeassistant:
-  # Name of the location where Home Assistant is running
-  name: Home
-  # Location required to calculate the time the sun rises and sets
-  latitude: !secret latitude
-  longitude: !secret longtitude
-  # Impacts weather/sunrise data (altitude above sea level in meters)
-  elevation: 51
-  # metric for Metric, imperial for Imperial
-  unit_system: metric
-  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-  time_zone: Europe/Helsinki
-  # Customization file
-  customize: !include customize.yaml
 
-# Show links to resources in log and frontend
-#introduction:
-
-# Enables the frontend
-frontend:
-
-# Enables configuration UI
-config:
-
-http:
-  # Secrets are defined in the file secrets.yaml
-  # Learn more at https://home-assistant.io/docs/configuration/secrets/
-  api_password: !secret http_password
-  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
-  base_url: !secret baseurl
-  cors_allowed_origins: '*'
-
-# Checks for available updates
-# Note: This component will send some information about your system to
-# the developers to assist with development of Home Assistant.
-# For more information, please see:
-# https://home-assistant.io/blog/2016/10/25/explaining-the-updater/
-updater:
-  # Optional, allows Home Assistant developers to focus on popular components.
-  # include_used_components: true
-
-# Discover some devices automatically
-discovery:
-  ignore:
-    - apple_tv
-
-# Allows you to issue voice commands from the frontend in enabled browsers
-conversation:
-
-# Enables support for tracking state changes over time
-history:
-
-# View all events in a logbook
-logbook:
-
-# Enables a map showing the location of tracked devices
-#map:
-
-# Track the sun
-sun:
-
-# Sensors
-sensor:
-  - platform: yweather
-    name: Weather Kerava
-    monitored_conditions:
-      - temperature
-      - weather_current
-      - humidity
-  - platform: mqtt
-    name: "Bedroom Temperature"
-    state_topic: "stat/Sonoff1/STATUS10"
-    value_template: "{{ value_json.StatusSNS.SI7021.Temperature }}"
-    unit_of_measurement: "°C"
-  - platform: mqtt
-    name: "Bedroom Humidity"
-    state_topic: "stat/Sonoff1/STATUS10"
-    value_template: "{{ value_json.StatusSNS.SI7021.Humidity }}"
-    unit_of_measurement: "%"
-#  - platform: mqtt
-#    name: "Corridor Temperature"
-#    state_topic: "stat/Sonoff2/STATUS10"
-#    value_template: "{{ value_json.StatusSNS.SI7021.Temperature }}"
-#    unit_of_measurement: "°C"
-#  - platform: mqtt
-#    name: "Corridor Humidity"
-#    state_topic: "stat/Sonoff2/STATUS10"
-#    value_template: "{{ value_json.StatusSNS.SI7021.Humidity }}"
-#    unit_of_measurement: "%"
-  - platform: miflora
-    mac: !secret mifloramac
-    name: Beconia flower
-    force_update: false
-    monitored_conditions:
-      - moisture
-      - light
-      - temperature
-      - conductivity
-      - battery
-  - platform: moon
-#Speedtest
-  - platform: speedtest
-    minute: 30
-    hour: 4
-    monitored_conditions:
-      - ping
-      - download
-      - upload
-#system monitor
-  - platform: systemmonitor
-    resources:
-      - type: disk_use_percent
-        arg: /home
-      - type: memory_free
-#aqara ble sensor
-  - platform: mitemp_bt
-    mac: !secret mitempmac
-    name: Living Room BLE
-    force_update: false
-    median: 3
-    monitored_conditions:
-      - temperature
-      - humidity
-      - battery
-  - platform: qnap
-    host: 192.168.1.113
-    username: !secret qnapuser
-    password: !secret qnappass
-    monitored_conditions:
-      - status
-      - cpu_usage
-      - memory_percent_used
-      - network_tx
-      - volume_percentage_used
-
-#Binary sensors
-binary_sensor:
-  - platform: template
-    sensors:
-      flower:
-        value_template: '{% if is_state("plant.beconia_plant", "ok") %}False{% else %}True{% endif %}'
-        friendly_name: 'Beconia flower'
-        device_class: smoke
-
-#Switches
-switch:
-  - platform: wake_on_lan
-    name: router
-    mac_address: !secret routermac
-    host: 192.168.1.1
-  - platform: command_line
-    name: Playstation
-    switches:
-      playstaton_button:
-        command_on: "ssh pi@127.0.0.1 sudo npx ps4-waker"
-        command_off: "ssh pi@127.0.0.1 sudo npx ps4-waker standby"
-        friendly_name: Playstation power
-
-#Playstation 4
-media_player:
-  - platform: ps4
-    name: Playstation 4
-    host: 192.169.1.101
-    filename: '/home/pi/.ps4-wake.credentials.json'
-    cmd: 'sudo ps4-waker'
-
-
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
 
 # Text to speech
 tts:
-  platform: google
-  language: 'fi'
+  - platform: google_translate
 
-# MQTT Broker to Mosquitto
-mqtt:
-  broker: localhost
-  port: 1883
-  client_id: home-assistant-1
-  keepalive: 60
-  username: pi
-  password: !secret mqtt_password
-  protocol: 3.1
-  birth_message:
-    topic: "tele/hass1/LWT"
-    payload: "Online"
-    qos: 1
-    retain: true
-  will_message:
-    topic: "tele/hass1/LWT"
-    payload: "Offline"
-    qos: 1
-    retain: true
+vacuum:
+  - platform: xiaomi_miio
+    host: 192.168.1.144
+    token: !secret roborock6s
 
-# Lights
-light:
-#  - platform: mqtt
-#    name: "Corridor Light"
-#    command_topic: "cmnd/Sonoff2/power"
-#    state_topic: "stat/Sonoff2/POWER"
-#    qos: 1
-#    payload_on: "ON"
-#    payload_off: "OFF"
-#    retain: true
-  - platform: mqtt
-    name: "Bedroom led lights"
-    state_topic: "stat/Sonoff1/POWER1"
-    command_topic: "cmnd/Sonoff1/POWER1"
-    availability_topic: "tele/Sonoff1/LWT"
-    qos: 1
-    payload_on: "ON"
-    payload_off: "OFF"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    retain: true
-  - platform: mqtt
-    name: "Closet light left"
-    state_topic: "stat/Sonoff6/POWER1"
-    command_topic: "cmnd/Sonoff6/POWER1"
-    availability_topic: "tele/Sonoff6/LWT"
-    qos: 1
-    payload_on: "ON"
-    payload_off: "OFF"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    retain: true
-  - platform: mqtt
-    name: "Closet light right"
-    state_topic: "stat/Sonoff7/POWER1"
-    command_topic: "cmnd/Sonoff7/POWER1"
-    availability_topic: "tele/Sonoff7/LWT"
-    qos: 1
-    payload_on: "ON"
-    payload_off: "OFF"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    retain: true
+sensor:
+  - platform: template
+    sensors:
+      corridor_movement:
+        value_template: >-
+          {% set movement1 =state_attr ("binary_sensor.motion_sensor_158d00016d56c6", "No motion since") | float %}
+          {% set movement2 =state_attr ("binary_sensor.motion_sensor_158d0002ead576", "No motion since") | float %}
+          {% set movement3 =state_attr ("binary_sensor.motion_sensor_158d0002ec3445", "No motion since") | float %}
 
-# Fans
-#fan:
-#  - platform: mqtt
-#    name: "Kitchen fan"
-#    command_topic: "cmnd/Sonoff4/power"
-#    state_topic: "stat/Sonoff4/POWER"
-#    qos: 1
-#    payload_on: "ON"
-#    payload_off: "OFF"
-#    retain: true
+          {% if movement1 > 599 and movement2 > 599 and movement3 > 599 %}
+          true
+          {%- else -%}
+          false
+          {%- endif %}
 
-# Camera
-#ffmpeg:
-#  ffmpeg_bin: /usr/bin/avconv
+discovery:
+  enable:
+    - dlna_dmr
 
-#camera:
-#  - platform: mjpeg
-#    mjpeg_url: !secret nuuskuurl
-#    name: Nuusku Cam
-  #  username: !secret nuuskuuser
-  #  password: !secret nuuskupass
-  #- platform: ffmpeg
-  #  ffmpeg_bin: /usr/bin/avconv
-  #  input: !secret nuuskuinput
-  #  name: Nuusku Cam2
-  #  extra_arguments: -q:v 2
+#media_player:
+#  - platform: dlna_dmr
+#    name: Radio
+#    url: http://192.168.1.29:8080/dd.xml
 
+switch:
+  - platform: template
+    switches:
+      radio:
+        friendly_name: Radio
+        value_template: "{{ is_state('media_player.ne_6451_s10_0022614c0060_2', 'playing') }}"
+        turn_on:
+          service: media_player.turn_on
+          data:
+            entity_id: media_player.ne_6451_s10_0022614c0060_2
+        turn_off:
+          service: media_player.turn_off
+          data:
+            entity_id: media_player.ne_6451_s10_0022614c0060_2
+        icon_template: mdi:radio
+      hoover:
+        friendly_name: Dobby
+        value_template: "{{ is_state('vacuum.xiaomi_vacuum_cleaner', 'cleaning') }}"
+        turn_on:
+          service: vacuum.start
+          data:
+            entity_id: vacuum.xiaomi_vacuum_cleaner
+        turn_off:
+          service: automation.trigger
+          data:
+            entity_id: automation.dobby_goes_to_sleep
+      ps4_switch:
+        friendly_name: PlayStation
+        value_template: "{{ is_state('media_player.playstation_4', 'playing') }}"
+        turn_on:
+          service: media_player.turn_on
+          data:
+            entity_id: media_player.playstation_4
+        turn_off:
+          service: media_player.turn_off
+          data:
+            entity_id: media_player.playstation_4
+        icon_template: mdi:gamepad
 
-#Slack integration
 notify:
   - platform: slack
     name: slack
     api_key: !secret slack_api
     default_channel: '#notify'
 
-plant:
-  beconia_plant:
-    sensors:
-      moisture: sensor.beconia_flower_moisture
-      battery: sensor.beconia_flower_battery
-      temperature: sensor.beconia_flower_temperature
-      conductivity: sensor.beconia_flower_conductivity
-      brightness: sensor.beconia_flower_light_intensity
-    min_moisture: 20
-    max_moisture: 70
-    min_battery: 17
-    min_conductivity: 100
-    min_temperature: 10
-
-weblink:
-  entities:
-    - name: Router
-      url: http://192.168.1.1/
-      icon: mdi:router-wireless
-    - name: Home Assistant.io
-      icon: mdi:home
-      url: https://www.home-assistant.io/
-    - name: QNAP
-      icon: mdi:nas
-      url: http://192.168.1.113/
-    - name: NuuskuCam
-      icon: mdi:cctv
-      url: http://192.168.1.16:57154/index.htm
-    - name: Sonoff1 Bedroom
-      icon: mdi:power-socket-eu
-      url: http://192.168.1.126/
-    - name: Sonoff2 old
-      icon: mdi:power-socket-eu
-      url: http://192.168.1.109/
-    - name: Sonoff4 old
-      icon: mdi:power-socket-eu
-      url: http://192.168.1.110/
-    - name: Sonoff6 Closer light left
-      icon: mdi:power-socket-eu
-      url: http://192.168.1.122/
-    - name: Sonoff7 Closer light right
-      icon: mdi:power-socket-eu
-      url: http://192.168.1.123/
-
-xiaomi_aqara:
-  discovery_retry: 10
-  gateways:
-    - key: !secret aqarakey
-
-device_tracker:
-  - platform: bluetooth_tracker
-    new_device_defaults:
-      track_new_devices: False
-      hide_if_away: True
-  - platform: ping
-    hosts:
-      hostone: 192.168.1.16
-
-####### before this works run from cli --- sudo su -s /bin/bash hass then ssh-keygen press enter for all then ssh-copy-id pi@127.0.0.1
-shell_command:
-  rebootpi: ssh pi@127.0.0.1 sudo reboot
-  restartha: ssh pi@127.0.0.1 sudo service home-assistant@homeassistant restart
-  shutdownha: ssh pi@127.0.0.1 sudo service home-assistant@homeassistant stop
-  startha: ssh pi@127.0.0.1 sudo service home-assistant@homeassistant start
-  updatehassbian: ssh pi@127.0.0.1 sudo hassbian-config upgrade hassbian
-  updatehomeassistant: ssh pi@127.0.0.1 sudo hassbian-config upgrade homeassistant
-  ps4wake: ssh pi@127.0.0.1 sudo npx ps4-waker
-  ps4standby: ssh pi@127.0.0.1 sudo npx ps4-waker standby
-  #fortnite: ssh pi@127.0.0.1 sudo npx ps4-waker && sudo npx ps4-waker start CUSA07669 //did not work
-
-
-homekit:
-  auto_start: False
-  filter:
-    exclude_entities:
-      # mediaplayers
-      - media_player.kd65x8505c
-      - media_player.apple_tv
-      - media_player.apple_tv_3
-      - remote.apple_tv
-      - media_player.dna_tvhubi
-      - remote.apple_tv_3
-      #weather sensors
-      - sensor.weather_kerava_current
-      - sensor.weather_kerava_humidity
-      - sensor.weather_kerava_temperature
-      #HUE Duplicates
-      - light.bulb_1
-      - light.bulb_2
-      - light.reading_light
-      - light.hue_ambiance_candle_1
-      - light.hue_ambiance_candle_2
-      - light.hue_ambiance_candle_3
-      - light.hue_ambiance_ceiling
-      - light.nikos_light
-      - light.cindis_light
-      - light.quest_room_bulb
-      #Master switches
-      - light.balcony
-      - light.bedroom
-      - light.entrance
-      - light.kitchen
-      - light.living_room
-      - light.quest_room
-      #Unused RF devices
-      - switch.remote_1
-      - switch.remote_2
-      - switch.remote_3
-      - switch.yksi
-      - switch.n1
-      - switch.n2
-      - switch.n3
-      - light.himmennin
-      #Wireless buttons
-      - binary_sensor.wall_switch_both_158d0001641c55
-      - binary_sensor.wall_switch_left_158d0001641c55
-      - binary_sensor.wall_switch_right_158d0001641c55
-      - binary_sensor.switch_158d00019ca681
-      #WakeOnLan devices
-      - switch.router
-      #scripts
-      - script.reboot_pi
-      - script.reboot_ha
-      - script.start_ha
-      - script.shutdown_ha
-      - script.update_hass
-      - script.update_ha
-      #automations
-      - automation.ask_bedroom_temperature_mqtt
-      - automation.movie_time__single_click
-      - automation.nuuksu_at_home_for_5_hours
-      - automation.nuuksu_at_home_for_6_hours
-      - automation.nuuksu_at_home_for_7_hours
-      - automation.nuuksu_at_home_for_8_hours
-      - automation.reboot_pi_if_connection_lost_to_router
-      - automation.restart_temperature_monitoring_next_morning_930
-      - automation.shit_going_down_ultra_toggle__long_press
-      - automation.start_homekit
-      - automation.temperature_above_26c
-      - automation.toggle_corridor_light__wireless_right
-      - automation.toggle_other__wireless_left
-      - automation.turn_lights_off_when_no_one_at_home_for_45_min
-      - automation.turn_off_christmas_lights_on_sunrise
-      - automation.turn_off_closet_lights_on_sunriset
-      - automation.turn_off_corridor_light_12_minutes_after_last_movement
-      - automation.turn_on_christmas_lights_on_sunset
-      - automation.turn_on_closet_lights_on_sunset
-      - automation.turn_on_corridor_light_when_door_is_opened
-      - automation.turn_on_corridor_light_when_there_is_movement
-      - automation.turn_on_lights_to_living_room_and_kitschen__double_click
-      #Groups
-      #in the future, when they add these to the Homekit
-
-logger:
-  default: warning
-  logs:
-    homeassistant.components.homekit: debug
-    pyhap: debug
-    
 group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml
+scene: !include scenes.yaml
