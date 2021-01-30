@@ -20,7 +20,18 @@ sensor:
           {% set movement2 =state_attr ("binary_sensor.motion_sensor_158d0002ead576", "No motion since") | float %}
           {% set movement3 =state_attr ("binary_sensor.motion_sensor_158d0002ec3445", "No motion since") | float %}
 
-          {% if movement1 > 599 and movement2 > 599 and movement3 > 599 %}
+          {% if movement1 > 299 and movement2 > 299 and movement3 > 299 %}
+          true
+          {%- else -%}
+          false
+          {%- endif %}
+      corridor_movement_night:
+        value_template: >-
+          {% set movement1 =state_attr ("binary_sensor.motion_sensor_158d00016d56c6", "No motion since") | float %}
+          {% set movement2 =state_attr ("binary_sensor.motion_sensor_158d0002ead576", "No motion since") | float %}
+          {% set movement3 =state_attr ("binary_sensor.motion_sensor_158d0002ec3445", "No motion since") | float %}
+
+          {% if movement1 > 119 and movement2 > 119 and movement3 > 119 %}
           true
           {%- else -%}
           false
@@ -63,7 +74,8 @@ switch:
             entity_id: automation.dobby_goes_to_sleep
       ps4_switch:
         friendly_name: PlayStation
-        value_template: "{{ is_state('media_player.playstation_4', 'playing') }}"
+        #value_template: "{{ is_state('media_player.playstation_4', 'playing') }}"
+        value_template: "{{ states('media_player.playstation_4') in ['idle', 'playing'] }}"
         turn_on:
           service: media_player.turn_on
           data:
@@ -73,6 +85,18 @@ switch:
           data:
             entity_id: media_player.playstation_4
         icon_template: mdi:gamepad
+      sony_tv_switch:
+        friendly_name: TV
+        value_template: "{{ is_state('media_player.sony_bravia_tv', 'on') }}"
+        turn_on:
+          service: media_player.turn_on
+          data:
+            entity_id: media_player.sony_bravia_tv
+        turn_off:
+          service: media_player.turn_off
+          data:
+            entity_id: media_player.sony_bravia_tv
+        icon_template: mdi:television
 
 notify:
   - platform: slack

@@ -91,11 +91,6 @@
   - platform: event
     event_type: xiaomi_aqara.click
     event_data:
-      entity_id: binary_sensor.switch_158d000210bf30
-      click_type: single
-  - platform: event
-    event_type: xiaomi_aqara.click
-    event_data:
       entity_id: binary_sensor.wall_switch_right_158d00054b1913
       click_type: single
   condition: []
@@ -126,13 +121,16 @@
     entity_id: light.desk_lamp
   mode: single
 - id: '1609863409048'
-  alias: Corridor lights off
+  alias: Corridor lights off daytime
   description: ''
   trigger:
   - platform: state
     entity_id: sensor.corridor_movement
     to: 'true'
-  condition: []
+  condition:
+  - condition: time
+    after: 08:00:00
+    before: '22:00:00'
   action:
   - service: homeassistant.turn_off
     entity_id: switch.wall_switch_158d000159abf6
@@ -211,9 +209,47 @@
     event_data:
       entity_id: binary_sensor.wall_switch_right_158d00054b1913
       click_type: long_click_press
-  condition: []
+  - platform: event
+    event_type: xiaomi_aqara.click
+    event_data:
+      entity_id: binary_sensor.switch_158d000210bf30
+      click_type: single
+  condition:
+  - condition: state
+    entity_id: vacuum.xiaomi_vacuum_cleaner
+    state: docked
   action:
   - service: script.turn_on
     data: {}
     entity_id: script.1609849815931
+  mode: single
+- id: '1611994892167'
+  alias: Desk lamp toggle
+  description: ''
+  trigger:
+  - platform: event
+    event_type: xiaomi_aqara.click
+    event_data:
+      entity_id: binary_sensor.switch_158d0001e85346
+      click_type: single
+  condition: []
+  action:
+  - service: homeassistant.toggle
+    data: {}
+    entity_id: light.desk_lamp
+  mode: single
+- id: '1612010506336'
+  alias: Corridor lights off nighttime
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.corridor_movement_night
+    to: 'true'
+  condition:
+  - condition: time
+    after: '22:00:00'
+    before: 08:00:00
+  action:
+  - service: homeassistant.turn_off
+    entity_id: switch.wall_switch_158d000159abf6
   mode: single
