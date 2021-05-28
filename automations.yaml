@@ -64,7 +64,10 @@
     event_data:
       entity_id: binary_sensor.switch_158d00019ca681
       click_type: single
-  condition: []
+  condition:
+  - condition: state
+    entity_id: media_player.kitchen_speakers
+    state: 'off'
   action:
   - service: switch.toggle
     data: {}
@@ -111,8 +114,9 @@
   condition: []
   action:
   - service: media_player.turn_off
-    data:
-      entity_id: media_player.ne_6451_s10_0022614c0060_2
+    data: {}
+    target:
+      entity_id: media_player.ne_6451_s10_0022614c0060
   - service: homeassistant.turn_off
     data: {}
     entity_id: switch.wall_switch_158d000159abf6
@@ -165,35 +169,83 @@
   description: ''
   trigger:
   - platform: state
-    entity_id: media_player.office_speaker
-    to: playing
+    entity_id: media_player.kitchen_speakers
+    from: 'off'
+    to: unavailable
+  - platform: state
+    entity_id: media_player.kitchen_speakers
+    from: 'off'
+    to: unknown
   condition: []
   action:
   - service: media_player.turn_on
     data: {}
-    entity_id: media_player.ne_6451_s10_0022614c0060_2
+    target:
+      entity_id: media_player.ne_6451_s10_0022614c0060
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - service: media_player.volume_set
+    target:
+      entity_id: media_player.ne_6451_s10_0022614c0060
+    data:
+      volume_level: 0
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
   - service: media_player.select_source
     data:
       source: Lisälaite
-    entity_id: media_player.ne_6451_s10_0022614c0060_2
+    target:
+      entity_id: media_player.ne_6451_s10_0022614c0060
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - service: media_player.volume_set
+    target:
+      entity_id: media_player.ne_6451_s10_0022614c0060
+    data:
+      volume_level: 0.13
   mode: single
 - id: '1609872675636'
   alias: Change correct channel to radio when casting stops
   description: ''
   trigger:
   - platform: state
-    entity_id: media_player.office_speaker
+    entity_id: media_player.kitchen_speakers
     to: 'off'
   condition: []
   action:
   - service: media_player.select_source
     data:
       source: Internet-radio
-    entity_id: media_player.ne_6451_s10_0022614c0060_2
-  - delay: 00:00:02
+    target:
+      entity_id: media_player.ne_6451_s10_0022614c0060
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.18
+    target:
+      entity_id: media_player.ne_6451_s10_0022614c0060
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 200
   - service: media_player.turn_off
     data: {}
-    entity_id: media_player.ne_6451_s10_0022614c0060_2
+    target:
+      entity_id: media_player.ne_6451_s10_0022614c0060
   mode: single
 - id: '1609945423140'
   alias: Doppy can come out
@@ -252,4 +304,335 @@
   action:
   - service: homeassistant.turn_off
     entity_id: switch.wall_switch_158d000159abf6
+  mode: single
+- id: '1612370132810'
+  alias: Kill the music and turn off the lights
+  description: ''
+  trigger:
+  - platform: event
+    event_type: xiaomi_aqara.click
+    event_data:
+      entity_id: binary_sensor.wall_switch_left_158d00054b1913
+      click_type: double
+  condition: []
+  action:
+  - service: media_player.turn_off
+    data: {}
+    entity_id: media_player.sony_bravia_tv
+  - service: media_player.turn_off
+    data: {}
+    entity_id: media_player.home
+  - service: media_player.turn_off
+    data: {}
+    entity_id: media_player.kitchen_speakers
+  - service: media_player.turn_off
+    data: {}
+    entity_id: media_player.living_room_tv
+  - delay: 00:00:05
+  - service: media_player.turn_off
+    data: {}
+    target:
+      entity_id: media_player.ne_6451_s10_0022614c0060
+  - delay:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  - service: automation.trigger
+    data: {}
+    entity_id: automation.turn_off_all_the_lights
+  mode: single
+- id: '1612382157035'
+  alias: Turn on Sony tv when casting starts and tv is off
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: media_player.living_room_tv
+    to: playing
+  condition:
+  - condition: state
+    entity_id: media_player.sony_bravia_tv
+    state: 'off'
+  action:
+  - service: media_player.turn_on
+    data: {}
+    entity_id: media_player.sony_bravia_tv
+  - service: media_player.select_source
+    data:
+      source: HDMI 1
+    entity_id: media_player.sony_bravia_tv
+  mode: single
+- id: '1612382757571'
+  alias: Turn off all the lights
+  description: ''
+  trigger: []
+  condition: []
+  action:
+  - service: homeassistant.turn_off
+    target:
+      area_id:
+      - bedroom
+      - entrance
+      - keittio
+      - olohuone
+  - service: switch.turn_off
+    data: {}
+    entity_id: switch.wall_switch_158d000159abf6
+  mode: single
+- id: '1612383383910'
+  alias: Kill the music if casting
+  description: ''
+  trigger:
+  - platform: event
+    event_type: xiaomi_aqara.click
+    event_data:
+      entity_id: binary_sensor.switch_158d0001e85346
+      click_type: double
+  condition: []
+  action:
+  - service: media_player.turn_off
+    data: {}
+    entity_id: media_player.home
+  - service: media_player.turn_off
+    data: {}
+    entity_id: media_player.sony_bravia_tv
+  - service: media_player.turn_off
+    data: {}
+    entity_id: media_player.kitchen_speakers
+  - service: media_player.turn_off
+    data: {}
+    entity_id: media_player.living_room_tv
+  mode: single
+- id: '1612383917270'
+  alias: Radio toggle id there is casting going on
+  description: ''
+  trigger:
+  - platform: event
+    event_type: xiaomi_aqara.click
+    event_data:
+      entity_id: binary_sensor.wall_switch_left_158d00054b1913
+      click_type: single
+  - platform: event
+    event_type: xiaomi_aqara.click
+    event_data:
+      entity_id: binary_sensor.switch_158d00019ca681
+      click_type: single
+  - platform: state
+    entity_id: switch.radio
+    to: 'off'
+    from: 'on'
+    for: 00:00:15
+  condition:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: media_player.kitchen_speakers
+      state: 'off'
+  action:
+  - service: media_player.turn_off
+    data: {}
+    target:
+      entity_id:
+      - media_player.kitchen_speakers
+      - media_player.home
+  mode: single
+- id: '1619174790866'
+  alias: Water sensor alerts
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.water_leak_sensor_158d0001bb7039
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.water_leak_sensor_158d000359a0f5
+    to: 'on'
+  condition: []
+  action:
+  - service: notify.slack
+    data:
+      message: VESIVAHINKO - Vesisensori tunnistanut kosteutta @channel
+  mode: single
+- id: '1619175032138'
+  alias: Door sensor alerts
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.door_window_sensor_158d0002e32aff
+    to: 'on'
+    for: 00:05:00
+  condition: []
+  action:
+  - service: notify.slack
+    data:
+      message: OVI ON AUKI - FRONT DOOR IS OPEN  @channel
+  mode: single
+- id: '1619175667292'
+  alias: Temperature Alerts
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.temperature_158d00019ce67e
+    above: '25.9'
+  - platform: numeric_state
+    entity_id: sensor.temperature_158d00019ce67e
+    above: '26.9'
+  - platform: numeric_state
+    entity_id: sensor.temperature_158d00019ce67e
+    above: '27.9'
+  condition: []
+  action:
+  - service: notify.slack
+    data:
+      message: 'Home temperature is high! :sweat: @here  Living room: {{ states.sensor.temperature_158d00019ce67e.state
+        }}''C'
+  mode: single
+- id: '1620726200817'
+  alias: Temperature Alert if outside temperature is over inside temperature
+  description: ''
+  trigger:
+  - platform: template
+    value_template: '{{ states.sensor.balcony_temperature.state > states.sensor.temperature_158d00019ce67e.state
+      }}'
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.temperature_158d00019ce67e
+    above: '24.5'
+  action:
+  - service: notify.slack
+    data:
+      message: 'Balcony temperature is above living room temperature :hot_face: Out:{{
+        states.sensor.balcony_temperature.state }}''C  In:{{ states.sensor.temperature_158d00019ce67e.state
+        }}''C'
+  - service: automation.turn_on
+    target:
+      entity_id: automation.temperature_alert_if_outside_temperature_is_under_inside_temperature
+  - service: automation.turn_off
+    target:
+      entity_id: automation.temperature_alert_if_outside_temperature_is_over_inside_temperature
+  mode: single
+- id: '1620733421077'
+  alias: Temperature Alert if outside temperature is under inside temperature
+  description: ''
+  trigger:
+  - platform: template
+    value_template: '{{ states.sensor.balcony_temperature.state < states.sensor.temperature_158d00019ce67e.state
+      }}'
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.temperature_158d00019ce67e
+    above: '24.5'
+  action:
+  - service: notify.slack
+    data:
+      message: 'Balcony is cooler again :cold_face: Out:{{ states.sensor.balcony_temperature.state
+        }}''C  In:{{ states.sensor.temperature_158d00019ce67e.state }}''C'
+  - service: automation.turn_on
+    target:
+      entity_id: automation.temperature_alert_if_outside_temperature_is_over_inside_temperature
+  - service: automation.turn_off
+    target:
+      entity_id: automation.temperature_alert_if_outside_temperature_is_under_inside_temperature
+  mode: single
+- id: '1621680487465'
+  alias: AC water level automation message
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.water_leak_sensor_158d00035a94e4
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.water_leak_sensor_158d00035a94e4
+    to: 'on'
+    for: 00:20:00
+  - platform: state
+    entity_id: binary_sensor.water_leak_sensor_158d00035a94e4
+    to: 'on'
+    for: 00:40:00
+  - platform: state
+    entity_id: binary_sensor.water_leak_sensor_158d00035a94e4
+    to: 'on'
+    for: 01:00:00
+  condition: []
+  action:
+  - service: notify.slack
+    data:
+      message: Ilmalämpöpumpun vesiastia on täysi. @channel
+      data:
+        username: Mitsubishi AC
+        icon: https://www.carlogos.org/logo/Mitsubishi-logo-2000x2500.png
+  mode: single
+- id: '1621683614166'
+  alias: 'Sensor battery alerts '
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: binary_sensor.water_leak_sensor_158d0001bb7039
+    attribute: battery_level
+    below: '12'
+  - platform: numeric_state
+    entity_id: binary_sensor.water_leak_sensor_158d000359a0f5
+    attribute: battery_level
+    below: '12'
+  - platform: numeric_state
+    entity_id: binary_sensor.water_leak_sensor_158d00035a94e4
+    attribute: battery_level
+    below: '12'
+  - platform: numeric_state
+    entity_id: binary_sensor.motion_sensor_158d00016d56c6
+    attribute: battery_level
+    below: '12'
+  - platform: numeric_state
+    entity_id: binary_sensor.motion_sensor_158d0002ead576
+    attribute: battery_level
+    below: '12'
+  - platform: numeric_state
+    entity_id: binary_sensor.motion_sensor_158d0002ec3445
+    attribute: battery_level
+    below: '12'
+  - platform: numeric_state
+    entity_id: binary_sensor.door_window_sensor_158d0002e32aff
+    attribute: battery_level
+    below: '12'
+  condition: []
+  action:
+  - service: notify.slack
+    data:
+      message: Vaihda sensorin {{ trigger.to_state.attributes.friendly_name }} paristo.
+  mode: single
+- id: '1621684619906'
+  alias: Door sensor alerts if no-one is at home
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.door_window_sensor_158d0002e32aff
+    to: 'on'
+  condition:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: person.niko_jokinen
+      state: not_home
+    - condition: state
+      entity_id: person.cindi
+      state: not_home
+  action:
+  - service: notify.slack
+    data:
+      message: OVI ON AUKI - FRONT DOOR IS OPEN  @channel
+  mode: single
+- id: '1622206934034'
+  alias: Washing machine finishes message
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.washing_machine_washer_job_state
+    to: finish
+  condition: []
+  action:
+  - service: notify.slack
+    data:
+      message: Washing machine - Cycle completed
+      data:
+        username: Samsung washer
+        icon: https://toppng.com/uploads/preview/samsung-logo-11609375502oke9itssfe.png
   mode: single

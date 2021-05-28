@@ -27,12 +27,27 @@ Used devices:
   - https://www.karkkainen.com/verkkokauppa/proove-smart-home-large-aloituspakkaus
 
 
-- Bluetooth device tracker
-    
 - HomeKit
   - https://www.home-assistant.io/components/homekit/
 
-- Coming soon: Broadlink RM mini 3 and new Aquara switches
+
+- Slack notifications
+
+
+- Monitoring corridor movement with three Aqara motion sensors
+  - in configuration.yaml -> corridor_movement and corridor_movement_night
+
+
+- DLNA-internet radio with Chromecast audio
+  - Automation to turn on the radio when casting starts to Chromecast audio
+
+
+- Automation to check if AC:s water bucket is full
+  - id: '1621680487465'
+  - Uses Aqara water sensor with extended cables to the bucket
+
+
+- Broadlink RM mini 3 in an other instance (TODO: own branch for other instance)
   - http://www.ibroadlink.com/rmMini3/
   - https://www.home-assistant.io/components/switch.broadlink/
 

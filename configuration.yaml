@@ -6,10 +6,17 @@ default_config:
 tts:
   - platform: google_translate
 
-vacuum:
-  - platform: xiaomi_miio
-    host: 192.168.1.144
-    token: !secret roborock6s
+# Depricated platform
+#vacuum:
+#  - platform: xiaomi_miio
+#    host: 192.168.1.144
+#    token: !secret roborock6s
+
+device_tracker:
+  - platform: traccar
+    host: !secret traccar_ip
+    username: !secret traccar_user
+    password: !secret traccar_pass
 
 sensor:
   - platform: template
@@ -51,15 +58,16 @@ switch:
     switches:
       radio:
         friendly_name: Radio
-        value_template: "{{ is_state('media_player.ne_6451_s10_0022614c0060_2', 'playing') }}"
+        #value_template: "{{ is_state('media_player.ne_6451_s10_0022614c0060', 'playing') }}"
+        value_template: "{{ states('media_player.ne_6451_s10_0022614c0060') in ['idle', 'unknown', 'unavailable', 'paused', 'playing'] }}"
         turn_on:
           service: media_player.turn_on
           data:
-            entity_id: media_player.ne_6451_s10_0022614c0060_2
+            entity_id: media_player.ne_6451_s10_0022614c0060
         turn_off:
           service: media_player.turn_off
           data:
-            entity_id: media_player.ne_6451_s10_0022614c0060_2
+            entity_id: media_player.ne_6451_s10_0022614c0060
         icon_template: mdi:radio
       hoover:
         friendly_name: Dobby
@@ -98,11 +106,21 @@ switch:
             entity_id: media_player.sony_bravia_tv
         icon_template: mdi:television
 
+light:
+  - platform: group
+    name: Bedroom lights
+    entities:
+      - light.bedroom_ceiling_light
+      - light.nikos_light
+      - light.cindis_light
+
 notify:
   - platform: slack
     name: slack
     api_key: !secret slack_api
     default_channel: '#notify'
+    username: Home Assistant
+    icon: https://avatars.slack-edge.com/2021-04-23/1988055427350_2a7cb0e36be355723b8c_48.png
 
 group: !include groups.yaml
 automation: !include automations.yaml
